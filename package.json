@@ -16,12 +16,12 @@
   "author": "Aurélien Baudet",
   "license": "MIT",
   "devDependencies": {
-    "@actions/core": "1.10.0",
-    "@actions/github": "5.1.1",
-    "@vercel/ncc": "0.26.1",
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
     "@typescript-eslint/eslint-plugin": "3.5.0",
     "@typescript-eslint/parser": "3.5.0",
+    "@vercel/ncc": "0.26.1",
     "eslint": "7.4.0",
-    "typescript": "3.9.6"
+    "typescript": "^5.0.2"
   }
 }

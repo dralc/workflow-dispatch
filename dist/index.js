@@ -9338,7 +9338,11 @@ function wrappy (fn, cb) {
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -9351,7 +9355,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -9383,7 +9387,11 @@ exports.debug = debug;
 // ----------------------------------------------------------------------------
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -9396,7 +9404,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -9418,7 +9426,7 @@ function getFollowUrl(workflowHandler, interval, timeout) {
         const start = Date.now();
         let url;
         do {
-            yield utils_1.sleep(interval);
+            yield (0, utils_1.sleep)(interval);
             try {
                 const result = yield workflowHandler.getWorkflowRunStatus();
                 url = result.url;
@@ -9426,7 +9434,7 @@ function getFollowUrl(workflowHandler, interval, timeout) {
             catch (e) {
                 core.debug(`Failed to get workflow url: ${e.message}`);
             }
-        } while (!url && !utils_1.isTimedOut(start, timeout));
+        } while (!url && !(0, utils_1.isTimedOut)(start, timeout));
         return url;
     });
 }
@@ -9436,22 +9444,22 @@ function waitForCompletionOrTimeout(workflowHandler, checkStatusInterval, waitFo
         let status;
         let result;
         do {
-            yield utils_1.sleep(checkStatusInterval);
+            yield (0, utils_1.sleep)(checkStatusInterval);
             try {
                 result = yield workflowHandler.getWorkflowRunStatus();
                 status = result.status;
-                core.debug(`Worflow is running for ${utils_1.formatDuration(Date.now() - start)}. Current status=${status}`);
+                core.debug(`Worflow is running for ${(0, utils_1.formatDuration)(Date.now() - start)}. Current status=${status}`);
             }
             catch (e) {
                 core.warning(`Failed to get workflow status: ${e.message}`);
             }
-        } while (status !== workflow_handler_1.WorkflowRunStatus.COMPLETED && !utils_1.isTimedOut(start, waitForCompletionTimeout));
+        } while (status !== workflow_handler_1.WorkflowRunStatus.COMPLETED && !(0, utils_1.isTimedOut)(start, waitForCompletionTimeout));
         return { result, start };
     });
 }
 function computeConclusion(start, waitForCompletionTimeout, result) {
-    if (utils_1.isTimedOut(start, waitForCompletionTimeout)) {
-        core.info(`Workflow wait timed out`);
+    if ((0, utils_1.isTimedOut)(start, waitForCompletionTimeout)) {
+        core.info('Workflow wait timed out');
         core.setOutput('workflow-conclusion', workflow_handler_1.WorkflowRunConclusion.TIMED_OUT);
         throw new Error('Workflow run has failed due to timeout');
     }
@@ -9471,11 +9479,11 @@ function computeConclusion(start, waitForCompletionTimeout, result) {
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const args = utils_1.getArgs();
+            const args = (0, utils_1.getArgs)();
             const workflowHandler = new workflow_handler_1.WorkflowHandler(args.token, args.workflowRef, args.owner, args.repo, args.ref);
             // Trigger workflow run
             yield workflowHandler.triggerWorkflow(args.inputs);
-            core.info(`Workflow triggered 🚀`);
+            core.info('Workflow triggered 🚀');
             if (args.displayWorkflowUrl) {
                 const url = yield getFollowUrl(workflowHandler, args.displayWorkflowUrlInterval, args.displayWorkflowUrlTimeout);
                 core.info(`You can follow the running workflow here: ${url}`);
@@ -9484,7 +9492,7 @@ function run() {
             if (!args.waitForCompletion) {
                 return;
             }
-            core.info(`Waiting for workflow completion`);
+            core.info('Waiting for workflow completion');
             const { result, start } = yield waitForCompletionOrTimeout(workflowHandler, args.checkStatusInterval, args.waitForCompletionTimeout);
             core.setOutput('workflow-url', result === null || result === void 0 ? void 0 : result.url);
             computeConclusion(start, args.waitForCompletionTimeout, result);
@@ -9509,7 +9517,11 @@ run();
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -9522,7 +9534,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -9623,7 +9635,11 @@ exports.formatDuration = formatDuration;
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -9636,7 +9652,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -9706,10 +9722,10 @@ class WorkflowHandler {
                     ref: this.ref,
                     inputs
                 });
-                debug_1.debug('Workflow Dispatch', dispatchResp);
+                (0, debug_1.debug)('Workflow Dispatch', dispatchResp);
             }
             catch (error) {
-                debug_1.debug('Workflow Dispatch error', error.message);
+                (0, debug_1.debug)('Workflow Dispatch error', error.message);
                 throw error;
             }
         });
@@ -9723,7 +9739,7 @@ class WorkflowHandler {
                     repo: this.repo,
                     run_id: runId
                 });
-                debug_1.debug('Workflow Run status', response);
+                (0, debug_1.debug)('Workflow Run status', response);
                 return {
                     url: response.data.html_url,
                     status: ofStatus(response.data.status),
@@ -9731,7 +9747,7 @@ class WorkflowHandler {
                 };
             }
             catch (error) {
-                debug_1.debug('Workflow Run status error', error);
+                (0, debug_1.debug)('Workflow Run status error', error);
                 throw error;
             }
         });
@@ -9745,7 +9761,7 @@ class WorkflowHandler {
                     repo: this.repo,
                     run_id: runId
                 });
-                debug_1.debug('Workflow Run artifacts', response);
+                (0, debug_1.debug)('Workflow Run artifacts', response);
                 return {
                     url: response.data.html_url,
                     status: ofStatus(response.data.status),
@@ -9753,7 +9769,7 @@ class WorkflowHandler {
                 };
             }
             catch (error) {
-                debug_1.debug('Workflow Run artifacts error', error);
+                (0, debug_1.debug)('Workflow Run artifacts error', error);
                 throw error;
             }
         });
@@ -9772,10 +9788,10 @@ class WorkflowHandler {
                     workflow_id: workflowId,
                     event: 'workflow_dispatch'
                 });
-                debug_1.debug('List Workflow Runs', response);
+                (0, debug_1.debug)('List Workflow Runs', response);
                 const runs = response.data.workflow_runs
                     .filter((r) => new Date(r.created_at).setMilliseconds(0) >= this.triggerDate);
-                debug_1.debug(`Filtered Workflow Runs (after trigger date: ${new Date(this.triggerDate).toISOString()})`, runs.map((r) => ({
+                (0, debug_1.debug)(`Filtered Workflow Runs (after trigger date: ${new Date(this.triggerDate).toISOString()})`, runs.map((r) => ({
                     id: r.id,
                     name: r.name,
                     created_at: r.creatd_at,
@@ -9790,7 +9806,7 @@ class WorkflowHandler {
                 return this.workflowRunId;
             }
             catch (error) {
-                debug_1.debug('Get workflow run id error', error);
+                (0, debug_1.debug)('Get workflow run id error', error);
                 throw error;
             }
         });
@@ -9811,7 +9827,7 @@ class WorkflowHandler {
                     repo: this.repo
                 });
                 const workflows = workflowsResp.data.workflows;
-                debug_1.debug(`List Workflows`, workflows);
+                (0, debug_1.debug)('List Workflows', workflows);
                 // Locate workflow either by name or id
                 const workflowFind = workflows.find((workflow) => workflow.name === this.workflowRef || workflow.id.toString() === this.workflowRef);
                 if (!workflowFind)
@@ -9821,7 +9837,7 @@ class WorkflowHandler {
                 return this.workflowId;
             }
             catch (error) {
-                debug_1.debug('List workflows error', error);
+                (0, debug_1.debug)('List workflows error', error);
                 throw error;
             }
         });
